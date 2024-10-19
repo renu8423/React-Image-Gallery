@@ -1,0 +1,80 @@
+import axios from "axios";
+import { useState, useEffect } from "react";
+import "./imagelist.css";
+import Image from "../image/image.jsx"; // Import the Image component
+
+function ImageList() {
+  const [images, setImages] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [nextUrl, setNextUrl] = useState(null);
+  const [prevUrl, setPrevUrl] = useState(null);
+  const [apiUrl, setApiUrl] = useState("https://api.slingacademy.com/v1/sample-data/photos?&limit=20");
+
+  async function downloadImages(url) {
+    setIsLoading(true);
+    try {
+      const response = await axios.get(url);
+      const imageResult = response.data.photos;
+      const img = response.data.results;
+      console.log(img);
+      
+console.log(imageResult);
+
+      setNextUrl(response.data.next);
+      setPrevUrl(response.data.previous);
+
+      if (Array.isArray(imageResult) && imageResult.length > 0) {
+        setImages(imageResult);
+      } else {
+        setError("No images found.");
+      }
+    } catch (error) {
+      setError("Failed to fetch images. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    if (apiUrl) {
+      downloadImages(apiUrl);
+    }
+  }, [apiUrl]);
+
+  return (
+    <>
+      <div>List of Gallery</div>
+      <div className="imageList-wrapper">
+        <div className="imagegarlary-wraper">
+          {isLoading ? (
+            "Loading..."
+          ) : error ? (
+            <div>{error}</div>
+          ) : (
+            <div className="gallery">
+              {images.map((img) => (
+                <Image
+                  key={img.id}
+                  id={img.id}
+                  url={img.url} // Passing the URL as prop
+                  title={img.title} // Passing the title as prop
+                />
+              ))}
+            </div>
+          )}
+        </div>
+        <div className="controller">
+          <button disabled={!prevUrl} onClick={() => setApiUrl(prevUrl)}>
+            Prev
+          </button>
+          <button disabled={!nextUrl} onClick={() => setApiUrl(nextUrl)}>
+            Next
+          </button>
+        </div>
+      </div>
+    </>
+  );
+}
+
+export default ImageList;

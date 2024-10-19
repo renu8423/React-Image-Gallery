@@ -1,0 +1,23 @@
+h3{
+    /* background-color: aqua; */
+    width: 300px;
+    height: 90px;
+    font-size: medium;
+    padding: 8px;
+    display: none;
+    
+
+}
+img{
+    border-radius: 12px;
+    width: calc(33.333% - 20px); /* 3 images per row */
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+ 
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+img:hover{
+    transform: scale(1.05);
+}
